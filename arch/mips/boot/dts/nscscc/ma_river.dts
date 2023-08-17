@@ -1,0 +1,165 @@
+/dts-v1/;
+
+#include <dt-bindings/interrupt-controller/irq.h>
+
+/ {
+	compatible = "nscscc,Ma_River_SoC";
+	#address-cells = <1>;
+	#size-cells = <1>;
+
+	chosen {
+		//bootargs = "console=ttyS0,115200n8 rdinit=/sbin/init";
+		bootargs = "console=ttyS0,115200n8 console=tty1 rdinit=/sbin/init root=/dev/nfs rootfstype=nfs nfsroot=192.168.6.186:/home/geng/Item/rootfs,proto=tcp,port=2049,nolock,vers=3 rootdelay=2 nfsrootdebug rw ip=192.168.6.20:192.168.6.186:192.168.6.1:255.255.255.0:soc:eth0:off";
+		stdout-path = "serial0";
+	};
+
+	aliases {
+		serial0 = &serial0;
+	};
+
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		cpu@0 {
+			device_type = "cpu";
+			compatible = "mips,4Kc";
+			clocks = <&cpuclk>;
+			reg = <0>;
+		};
+	};
+
+	cpuclk: cpuclk {
+		compatible = "fixed-clock";
+		clock-frequency = <100000000>;
+		#clock-cells = <0>;
+	};
+
+	socclk: socclk {
+		compatible = "fixed-clock";
+		clock-frequency = <100000000>;
+		#clock-cells = <0>;
+	};
+
+	memory {
+		device_type = "memory";
+		reg = <0x0 0x8000000>;
+	};
+
+	cpuintc: interrupt-controller@0 {
+		#address-cells = <0>;
+		#interrupt-cells = <1>;
+		interrupt-controller;
+		compatible = "mti,cpu-interrupt-controller";
+	};
+
+	soc {
+		compatible = "simple-bus";
+		#address-cells = <1>;
+		#size-cells = <1>;
+		#interrupt-cells = <1>;
+		ranges;
+
+		axi_intc_0: interrupt-controller@1fb00000 {
+			#interrupt-cells = <1>;
+			compatible = "xlnx,xps-intc-1.00.a";
+			interrupt-controller;
+			interrupt-parent = <&cpuintc>;
+			interrupts = <2>;
+			reg = <0x1fb00000 0x1000>;
+			xlnx,kind-of-intr = <0x5>;
+			xlnx,num-intr-inputs = <0x3>;
+			status = "okay";
+		}; 
+
+		serial0: serial@1fe40000 {
+			device_type = "serial";
+			compatible = "ns16550a";
+			reg = <0x1fe40000 0x1000>;
+			reg-offset = <0x0000>;
+			reg-io-width = <4>;
+			reg-shift = <2>;
+			current-speed = <115200>;
+			clocks = <&socclk>;
+			interrupt-parent = <&cpuintc>;
+			interrupts = <3>;
+		};
+
+
+		axi_ethernetlite: ethernet@1ff00000 {
+			compatible = "xlnx,xps-ethernetlite-1.00.a";
+			device_type = "network";
+			mac-address = [18 98 00 01 00 29];
+			phy-handle = <&phy0>;
+			reg = <0x1ff00000 0x10000>;
+			xlnx,duplex = <0x1>;
+			xlnx,include-global-buffers = <0x1>;
+			xlnx,include-internal-loopback = <0x0>;
+			xlnx,include-mdio = <0x1>;
+			xlnx,instance = "axi_ethernetlite_inst";
+			xlnx,rx-ping-pong = <0x1>;
+			xlnx,s-axi-id-width = <0x1>;
+			xlnx,tx-ping-pong = <0x1>;
+			xlnx,use-internal = <0x0>;
+			interrupt-parent = <&axi_intc_0>;
+			interrupts = <0>;
+			status = "okay";
+			mdio {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				phy0: phy@1 {
+					device_type = "ethernet-phy";
+					reg = <1>;
+				};
+			};
+		};
+
+		lcd: lcd@1fd00000 {
+		    compatible = "mariverlcd";
+		    interrupt-parent = <&cpuintc>;
+			interrupts = <5>;
+			reg = <0x1fd00000 0x10000>;
+		};
+
+		vga: vga@1fe00000 {
+		    compatible = "marivervga";
+			reg = <0x1fe00000 0x10000>;
+		};
+
+		IIC: i2c@1fa00000 {
+			compatible = "xlnx,xps-iic-2.00.a";
+			interrupt-parent = <&axi_intc_0>;
+			interrupts = <1>;
+			reg = <0x1fa00000 0x10000>;
+			clocks = <&socclk>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+		
+			mariverlcd_ts@14 {
+				compatible = "mariverlcd_ts";
+				reg = <0x14>;
+				status = "okay";
+			};
+		};
+
+		axi_quad_spi: spi@1fe80000 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			compatible = "xlnx,xps-spi-2.00.a";
+			interrupt-parent = <&axi_intc_0>;
+			interrupts = <2>;
+			reg = <0x1fe80000 0x10000>;
+			xlnx,num-ss-bits = <0x1>;
+			num-cs = <0x1>;
+			fifo-size = <16>;
+
+			sd1@0 {
+				reg = <0>;
+				status = "okay";
+				compatible = "mmc-spi-slot";
+				spi-max-frequency = <25000000>;
+			};
+
+		};
+
+	};
+};
