@@ -2161,6 +2161,27 @@ config FB_HYPERV
 	help
 	  This framebuffer driver supports Microsoft Hyper-V Synthetic Video.
 
+config FB_MARIVER_LCD
+	tristate "Mariver SoC LCD frame buffer support"
+	depends on FB
+	select FB_SYS_FILLRECT
+	select FB_SYS_COPYAREA
+	select FB_SYS_IMAGEBLIT
+	select FB_SYS_FOPS
+	help
+	  This is a lcd driver for mariver SoC.
+   
+
+config FB_MARIVER_VGA
+	tristate "Mariver SoC VGA frame buffer support"
+	depends on FB
+	select FB_SYS_FILLRECT
+	select FB_SYS_COPYAREA
+	select FB_SYS_IMAGEBLIT
+	select FB_SYS_FOPS
+	help
+	  This is a VGA driver for mariver SoC.
+
 config FB_SIMPLE
 	tristate "Simple framebuffer support"
 	depends on FB
