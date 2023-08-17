@@ -13,6 +13,16 @@ menuconfig INPUT_KEYBOARD
 
 if INPUT_KEYBOARD
 
+config KEYBOARD_MARIVER
+	tristate "Keyboard driver for Mariver SoC"
+	help
+	  Keyboard driver for Mariver SoC
+
+config KEYBOARD_MARIVER_IME
+	tristate "IME support for Mariver SoC"
+	help
+	  IME support for Mariver SoC
+	  
 config KEYBOARD_ADC
 	tristate "ADC Ladder Buttons"
 	depends on IIO
