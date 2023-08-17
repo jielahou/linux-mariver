@@ -2832,10 +2832,12 @@ static int vc_con_write_normal(struct vc_data *vc, int tc, int c,
 			break;
 
 		/* A space is printed in the second column */
-		tc = conv_uni_to_pc(vc, ' ');
-		if (tc < 0)
-			tc = ' ';
-		next_c = ' ';
+		// tc = conv_uni_to_pc(vc, ' ');
+		// if (tc < 0)
+		// 	tc = ' ';
+		// next_c = ' ';
+		tc=(c >> 8) & 0xFF;
+		next_c=(c >> 8) & 0xFF;
 	}
 	notify_write(vc, c);
 

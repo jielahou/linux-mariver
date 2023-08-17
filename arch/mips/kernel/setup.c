@@ -792,7 +792,8 @@ void __init setup_arch(char **cmdline_p)
 
 #if defined(CONFIG_VT)
 #if defined(CONFIG_VGA_CONSOLE)
-	conswitchp = &vga_con;
+	//conswitchp = &vga_con;
+	conswitchp = &mrvga_con;
 #endif
 #endif
 

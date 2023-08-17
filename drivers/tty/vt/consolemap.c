@@ -864,7 +864,6 @@ int conv_uni_to_pc(struct vc_data *conp, long ucs)
 {
 	struct uni_pagedict *dict;
 	u16 **dir, *row, glyph;
-
 	/* Only 16-bit codes supported at this time */
 	if (ucs > 0xffff)
 		return -4;		/* Not found */
@@ -880,23 +879,25 @@ int conv_uni_to_pc(struct vc_data *conp, long ucs)
 	else if ((ucs & ~UNI_DIRECT_MASK) == UNI_DIRECT_BASE)
 		return ucs & UNI_DIRECT_MASK;
 
+	
 	dict = *conp->uni_pagedict_loc;
 	if (!dict)
-		return -3;
+		return (ucs & 0xFF) | 0x100;//-3;
 
 	dir = dict->uni_pgdir[UNI_DIR(ucs)];
 	if (!dir)
-		return -4;
+		return (ucs & 0xFF) | 0x100;//-4;
 
 	row = dir[UNI_ROW(ucs)];
 	if (!row)
-		return -4;
+		return (ucs & 0xFF) | 0x100;//-4;
 
 	glyph = row[UNI_GLYPH(ucs)];
 	if (glyph >= MAX_GLYPH)
-		return -4;
+		return (ucs & 0xFF) | 0x100;//-4;
 
 	return glyph;
+	
 }
 
 /*

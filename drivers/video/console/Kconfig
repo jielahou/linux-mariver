@@ -70,6 +70,11 @@ config DUMMY_CONSOLE_ROWS
 	  monitor.
 	  Select 25 if you use a 640x480 resolution by default.
 
+config MARIVER_VGA_CONSOLE
+	bool "Mariver SoC VGA Console support"
+	help
+	  Mariver SoC VGA console driver. Based on char mode of VGA controller.
+
 config FRAMEBUFFER_CONSOLE
 	bool "Framebuffer Console support"
 	depends on FB && !UML

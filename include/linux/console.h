@@ -99,6 +99,7 @@ extern const struct consw *conswitchp;
 
 extern const struct consw dummy_con;	/* dummy console buffer */
 extern const struct consw vga_con;	/* VGA text console */
+extern const struct consw mrvga_con;
 extern const struct consw newport_con;	/* SGI Newport console  */
 
 int con_is_bound(const struct consw *csw);
