@@ -1271,6 +1271,8 @@ static int mmc_spi_dma_alloc(struct mmc_spi_host *host)
 	struct spi_device *spi = host->spi;
 	struct device *dev;
 
+	return 0;
+
 	if (!spi->master->dev.parent->dma_mask)
 		return 0;
 
